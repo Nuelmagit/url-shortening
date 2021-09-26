@@ -11,5 +11,6 @@ import { UrlEncoderService } from './url-encoder.service';
       useClass: StorageBasedEncoder,
     },
   ],
+  exports: [UrlEncoderService],
 })
 export class EncoderModule {}
