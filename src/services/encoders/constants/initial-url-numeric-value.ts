@@ -1,0 +1,1 @@
+export const INITIAL_URL_NUMERIC_VALUE = 1000;
