@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { ALLOWED_ENCODING_CHARACTERS } from '../constants/allowed-encoding-characters';
+import { EncodeLongUrlResponse } from '../types/encode-long-url-response';
 import { UrlEncoderService } from '../url-encoder.service';
 import { UrlStorage } from './url-storages/implementations/url-storage';
 import { LONG_URL_STORAGE_TOKEN } from './url-storages/long-url-storage.token';
@@ -17,16 +18,18 @@ export class StorageBasedEncoder extends UrlEncoderService {
     super();
   }
 
-  encodeLongUrl(longUrl: string): string | null {
+  encodeLongUrl(longUrl: string): EncodeLongUrlResponse {
     if (!longUrl) return null;
+    let shortUrl;
 
     if (this.shortUrlStorage.hasUrl(longUrl)) {
-      return this.shortUrlStorage.getUrl(longUrl);
+      shortUrl = this.shortUrlStorage.getUrl(longUrl);
+      return this.formatEncodeLongUrlResponse(shortUrl, false);
     }
 
-    const shortUrl = this.generateShortUrl(longUrl);
+    shortUrl = this.generateShortUrl(longUrl);
     this.storeUrls(longUrl, shortUrl);
-    return shortUrl;
+    return this.formatEncodeLongUrlResponse(shortUrl, true);
   }
 
   decodeShortUrl(shortUrl: string): string | null {
@@ -54,5 +57,16 @@ export class StorageBasedEncoder extends UrlEncoderService {
     }
 
     return result;
+  }
+
+  private formatEncodeLongUrlResponse(
+    shortUrl: string,
+    isNewEncoded: boolean,
+  ): EncodeLongUrlResponse {
+    const response = {
+      shortUrl,
+      isNewEncoded,
+    };
+    return response;
   }
 }

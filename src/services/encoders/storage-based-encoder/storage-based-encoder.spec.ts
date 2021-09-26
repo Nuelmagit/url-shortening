@@ -22,24 +22,26 @@ describe('StorageBasedstorageBasedEncoder', () => {
   it('Should return first encoded url', () => {
     const firstEncodedResult =
       storageBasedEncoder.encodeLongUrl('www.google.com');
-    expect(firstEncodedResult).toBe(FIRST_ENCODED_URL);
+    expect(firstEncodedResult.shortUrl).toBe(FIRST_ENCODED_URL);
   });
 
   it('Should return the same short url for the same long url. Does not  matter how many times it is executed', () => {
     const url = 'www.google.com';
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
-    expect(storageBasedEncoder.encodeLongUrl(url)).toBe(FIRST_ENCODED_URL);
+    let counter = 0;
+    while (counter < 50) {
+      expect(storageBasedEncoder.encodeLongUrl(url).shortUrl).toBe(
+        FIRST_ENCODED_URL,
+      );
+      counter++;
+    }
   });
 
   it('Should decode short url', () => {
     const url = 'www.google.com';
-    const shortUrl = storageBasedEncoder.encodeLongUrl(url);
-    expect(storageBasedEncoder.decodeShortUrl(shortUrl)).toBe(url);
+    const encodeResponse = storageBasedEncoder.encodeLongUrl(url);
+    expect(storageBasedEncoder.decodeShortUrl(encodeResponse.shortUrl)).toBe(
+      url,
+    );
   });
 
   it('Should not return same short url for different long urls', () => {
