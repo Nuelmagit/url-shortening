@@ -1,18 +1,23 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { DecodeDto } from 'src/dtos/decode.dto';
 import { EncodeDto } from 'src/dtos/encode.dto';
+import { DecodeResponse } from 'src/response-types/decode-response.dto';
+import { EncodeResponse } from 'src/response-types/encode-response.dto';
+import { ShortenerRequestHandler } from 'src/services/shortener-request-handler.service';
 
 @Controller()
 export class ShortUrlController {
-  constructor() {}
+  constructor(
+    private readonly shortenerRequestHandler: ShortenerRequestHandler,
+  ) {}
 
   @Post('encode')
-  encode(@Body() encodeDto: EncodeDto): string {
-    return 'encode';
+  encode(@Body() encodeDto: EncodeDto): EncodeResponse {
+    return this.shortenerRequestHandler.handleEncode(encodeDto);
   }
 
   @Post('decode')
-  decode(@Body() decodeDto: DecodeDto) {
-    return 'decode';
+  decode(@Body() decodeDto: DecodeDto): DecodeResponse {
+    return this.shortenerRequestHandler.handleDecode(decodeDto);
   }
 }
