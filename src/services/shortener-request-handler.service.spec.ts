@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EncoderModule } from './encoders/url-encoder.module';
 import { ShortenerRequestHandler } from './shortener-request-handler.service';
-
+import { EventEmitterModule } from '@nestjs/event-emitter';
 const FIRST_ENCODED_URL = '84210vf731';
 
 describe('ShortenerRequestHandler', () => {
@@ -11,7 +11,7 @@ describe('ShortenerRequestHandler', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ShortenerRequestHandler],
-      imports: [EncoderModule],
+      imports: [EncoderModule, EventEmitterModule.forRoot()],
     }).compile();
 
     shortenerRequestHandler = module.get<ShortenerRequestHandler>(
