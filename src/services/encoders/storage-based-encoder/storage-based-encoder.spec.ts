@@ -1,11 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IMPLEMENTATION_DEFINITIONS } from './implementation-definitions';
 import { StorageBasedEncoder } from './storage-based-encoder';
+import { UrlStorage } from './url-storages/implementations/url-storage';
+import { LONG_URL_STORAGE_TOKEN } from './url-storages/long-url-storage.token';
+import { SHORT_URL_STORAGE_TOKEN } from './url-storages/short-url-storage.token';
+import { UrlToNumberTransformer } from './url-to-number-transformers/url-to-number-transformer';
 
 const FIRST_ENCODED_URL = '84210vf731';
+const FIRST_URL = 'www.google.com';
+const SECOND_URL = 'www.github.com';
+const THIRD_URL = 'www.stackoverflow.com';
 
 describe('StorageBasedstorageBasedEncoder', () => {
   let storageBasedEncoder: StorageBasedEncoder;
+  let urlToNumberTransformer: UrlToNumberTransformer;
+
+  let shortUrlStorage: UrlStorage;
+  let longUrlStorage: UrlStorage;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,6 +24,11 @@ describe('StorageBasedstorageBasedEncoder', () => {
     }).compile();
 
     storageBasedEncoder = module.get<StorageBasedEncoder>(StorageBasedEncoder);
+    urlToNumberTransformer = module.get<UrlToNumberTransformer>(
+      UrlToNumberTransformer,
+    );
+    shortUrlStorage = module.get<UrlStorage>(SHORT_URL_STORAGE_TOKEN);
+    longUrlStorage = module.get<UrlStorage>(LONG_URL_STORAGE_TOKEN);
   });
 
   it('StorageBasedstorageBasedEncoder - should be defined', () => {
@@ -20,16 +36,14 @@ describe('StorageBasedstorageBasedEncoder', () => {
   });
 
   it('Should return first encoded url', () => {
-    const firstEncodedResult =
-      storageBasedEncoder.encodeLongUrl('www.google.com');
+    const firstEncodedResult = storageBasedEncoder.encodeLongUrl(FIRST_URL);
     expect(firstEncodedResult.shortUrl).toBe(FIRST_ENCODED_URL);
   });
 
   it('Should return the same short url for the same long url. Does not  matter how many times it is executed', () => {
-    const url = 'www.google.com';
     let counter = 0;
     while (counter < 50) {
-      expect(storageBasedEncoder.encodeLongUrl(url).shortUrl).toBe(
+      expect(storageBasedEncoder.encodeLongUrl(FIRST_URL).shortUrl).toBe(
         FIRST_ENCODED_URL,
       );
       counter++;
@@ -37,21 +51,16 @@ describe('StorageBasedstorageBasedEncoder', () => {
   });
 
   it('Should decode short url', () => {
-    const url = 'www.google.com';
-    const encodeResponse = storageBasedEncoder.encodeLongUrl(url);
+    const encodeResponse = storageBasedEncoder.encodeLongUrl(FIRST_URL);
     expect(storageBasedEncoder.decodeShortUrl(encodeResponse.shortUrl)).toBe(
-      url,
+      FIRST_URL,
     );
   });
 
   it('Should not return same short url for different long urls', () => {
-    const firstUrl = 'www.google.com';
-    const secondUrl = 'www.github.com';
-    const thirdUrl = 'www.stackoverflow.com';
-
-    const firstshortUrl = storageBasedEncoder.encodeLongUrl(firstUrl);
-    const secondShortUrl = storageBasedEncoder.encodeLongUrl(secondUrl);
-    const thirdShortUrl = storageBasedEncoder.encodeLongUrl(thirdUrl);
+    const firstshortUrl = storageBasedEncoder.encodeLongUrl(FIRST_URL);
+    const secondShortUrl = storageBasedEncoder.encodeLongUrl(SECOND_URL);
+    const thirdShortUrl = storageBasedEncoder.encodeLongUrl(THIRD_URL);
 
     expect(firstshortUrl).not.toBe(secondShortUrl);
     expect(firstshortUrl).not.toBe(thirdShortUrl);
@@ -80,5 +89,45 @@ describe('StorageBasedstorageBasedEncoder', () => {
     expect(
       storageBasedEncoder.decodeShortUrl(false as unknown as string),
     ).toBeNull();
+  });
+
+  it('encodeLongUrl should verify is the url was already encoded', () => {
+    const spy = jest.spyOn(shortUrlStorage, 'hasUrl');
+    storageBasedEncoder.encodeLongUrl(FIRST_URL);
+
+    expect(spy).toHaveBeenCalledWith(FIRST_URL);
+  });
+
+  it('encodeLongUrl should return stored url if it was already encoded', () => {
+    storageBasedEncoder.encodeLongUrl(FIRST_URL);
+
+    const spy = jest.spyOn(shortUrlStorage, 'getUrl');
+    storageBasedEncoder.encodeLongUrl(FIRST_URL);
+
+    expect(spy).toHaveBeenCalledWith(FIRST_URL);
+  });
+
+  it('encodeLongUrl should get numeric value of url', () => {
+    const spy = jest.spyOn(urlToNumberTransformer, 'urlToNumber');
+
+    storageBasedEncoder.encodeLongUrl(FIRST_URL);
+
+    expect(spy).toHaveBeenCalledWith(FIRST_URL);
+  });
+
+  it('encodeLongUrl should store urls after encode', () => {
+    const shortUrlStorageSpy = jest.spyOn(shortUrlStorage, 'storeUrl');
+    const longUrlStorageSpy = jest.spyOn(longUrlStorage, 'storeUrl');
+    const encodeResult = storageBasedEncoder.encodeLongUrl(FIRST_URL);
+
+    expect(shortUrlStorageSpy).toHaveBeenCalledWith(
+      FIRST_URL,
+      encodeResult.shortUrl,
+    );
+
+    expect(longUrlStorageSpy).toHaveBeenCalledWith(
+      encodeResult.shortUrl,
+      FIRST_URL,
+    );
   });
 });
