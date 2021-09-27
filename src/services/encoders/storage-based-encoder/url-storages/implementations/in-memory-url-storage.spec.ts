@@ -38,7 +38,7 @@ describe('InMemoryUrlStorage', () => {
     }
   });
 
-  it('Should have not the url', () => {
+  it('Should have not the url stored', () => {
     const key = 'www.google.com';
     expect(inMemoryUrlStorage.hasUrl(key)).toBe(false);
   });
