@@ -4,10 +4,11 @@ import { StatisticController } from './controllers/statistic.controller';
 import { EncoderModule } from './services/encoders/url-encoder.module';
 import { ShortenerRequestHandler } from './services/shortener-request-handler.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { EncodeEventListener } from './services/event-listeners/encode-event.listener';
+import { listeners } from './services/event-listeners/listeners';
+import { StatisticsStorageService } from './services/statistics/storage/statistics-storage.service';
 
 @Module({
-  providers: [ShortenerRequestHandler, EncodeEventListener],
+  providers: [ShortenerRequestHandler, StatisticsStorageService, ...listeners],
   imports: [EncoderModule, EventEmitterModule.forRoot()],
   controllers: [ShortUrlController, StatisticController],
 })
