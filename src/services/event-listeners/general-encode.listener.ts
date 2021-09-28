@@ -5,10 +5,11 @@ import { EncodeEventDto } from 'src/events/payloads/encode-event.dto';
 import { GeneralEncodeStatstic } from '../statistics/statistics-types/general-encode-statistic';
 import { StatisticStorageUser } from '../statistics/storage/statistic-storage-user';
 import { StatisticsStorageService } from '../statistics/storage/statistics-storage.service';
+import { GENERAL_ENCODE_KEY } from '../statistics/statistics-keys';
 
 @Injectable()
 export class GeneralEncodeListener extends StatisticStorageUser {
-  protected readonly storageKey = 'generalEncode';
+  protected readonly storageKey = GENERAL_ENCODE_KEY;
 
   constructor(statisticStorage: StatisticsStorageService) {
     super(statisticStorage);

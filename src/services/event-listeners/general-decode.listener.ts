@@ -5,10 +5,11 @@ import { StatisticStorageUser } from '../statistics/storage/statistic-storage-us
 import { StatisticsStorageService } from '../statistics/storage/statistics-storage.service';
 import { GeneralDecodeStatstic } from '../statistics/statistics-types/general-decode-statistic';
 import { DecodeEventDto } from 'src/events/payloads/decode-event.dto';
+import { GENERAL_DECODE_KEY } from '../statistics/statistics-keys';
 
 @Injectable()
 export class GeneralDecodeListener extends StatisticStorageUser {
-  protected readonly storageKey = 'generalDecode';
+  protected readonly storageKey = GENERAL_DECODE_KEY;
 
   constructor(statisticStorage: StatisticsStorageService) {
     super(statisticStorage);

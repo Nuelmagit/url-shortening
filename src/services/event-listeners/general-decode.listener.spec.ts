@@ -3,10 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { GeneralDecodeListener } from './general-decode.listener';
 import { StatisticsStorageService } from '../statistics/storage/statistics-storage.service';
 import { GeneralDecodeStatstic } from '../statistics/statistics-types/general-decode-statistic';
+import { GENERAL_DECODE_KEY } from '../statistics/statistics-keys';
 
 const URL = 'www.google.com';
-
-const storeKey = 'generalDecode';
 
 describe('GeneralDecodeListener', () => {
   let generalDecodeListener: GeneralDecodeListener;
@@ -31,7 +30,7 @@ describe('GeneralDecodeListener', () => {
   });
 
   it('should init the store', () => {
-    expect(statisticsStorageService.get(storeKey)).not.toBeNull();
+    expect(statisticsStorageService.get(GENERAL_DECODE_KEY)).not.toBeNull();
   });
 
   it('should update store when recieving event', () => {
@@ -53,7 +52,8 @@ describe('GeneralDecodeListener', () => {
       decodedUrl: URL,
     });
 
-    const stats: GeneralDecodeStatstic = statisticsStorageService.get(storeKey);
+    const stats: GeneralDecodeStatstic =
+      statisticsStorageService.get(GENERAL_DECODE_KEY);
 
     expect(stats.existentUrlDecodeRequests).toBe(1);
     expect(stats.unexistentUrlDecodeRequests).toBe(0);
@@ -64,7 +64,8 @@ describe('GeneralDecodeListener', () => {
       decodedUrl: null,
     });
 
-    const stats: GeneralDecodeStatstic = statisticsStorageService.get(storeKey);
+    const stats: GeneralDecodeStatstic =
+      statisticsStorageService.get(GENERAL_DECODE_KEY);
 
     expect(stats.existentUrlDecodeRequests).toBe(0);
     expect(stats.unexistentUrlDecodeRequests).toBe(1);

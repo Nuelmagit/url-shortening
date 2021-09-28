@@ -2,10 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { GeneralEncodeListener } from './general-encode.listener';
 import { StatisticsStorageService } from '../statistics/storage/statistics-storage.service';
+import { GENERAL_ENCODE_KEY } from '../statistics/statistics-keys';
 
 const URL = 'www.google.com';
-
-const storeKey = 'generalEncode';
 
 describe('GeneralEncodeListener', () => {
   let generalEncodeListener: GeneralEncodeListener;
@@ -30,7 +29,7 @@ describe('GeneralEncodeListener', () => {
   });
 
   it('should init the store', () => {
-    expect(statisticsStorageService.get(storeKey)).not.toBeNull();
+    expect(statisticsStorageService.get(GENERAL_ENCODE_KEY)).not.toBeNull();
   });
 
   it('should update store when the url was recently encoded', () => {
@@ -64,7 +63,7 @@ describe('GeneralEncodeListener', () => {
         recentlyEncoded: true,
       });
       counter++;
-      const store = statisticsStorageService.get(storeKey);
+      const store = statisticsStorageService.get(GENERAL_ENCODE_KEY);
       expect(store.urlsEncoded).toBe(counter);
     }
   });
