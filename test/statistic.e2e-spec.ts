@@ -4,17 +4,9 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { StatisticsService } from 'src/services/statistics/statistics.service';
 
-const BAD_REQUEST_BODY = {
-  statusCode: 400,
-  message: ['longUrl must be an URL address'],
-  error: 'Bad Request',
-};
-
-const FIRST_URL_RESPONSE_BODY = { shortUrl: '84210vf731' };
-
 describe('StatisticController (e2e)', () => {
   let app: INestApplication;
-  let statisticsService = {
+  const statisticsService = {
     getStatistics: () => {
       return { test: 'test123' };
     },
