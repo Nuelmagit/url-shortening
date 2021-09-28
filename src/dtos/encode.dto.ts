@@ -1,6 +1,6 @@
 import { IsUrl } from 'class-validator';
 
 export class EncodeDto {
-  @IsUrl()
+  @IsUrl({ require_protocol: true })
   longUrl: string;
 }
