@@ -8,35 +8,9 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { EncodeEventDto } from 'src/events/payloads/encode-event.dto';
 import { StatisticStorageUser } from '../statistics/storage/statistic-storage-user';
 import { StatisticsStorageService } from '../statistics/storage/statistics-storage.service';
-import { UrlStatstic } from '../statistics/statistics-types/url-statistic';
 import { DecodeEventDto } from 'src/events/payloads/decode-event.dto';
 import { RedirectionEventDto } from 'src/events/payloads/redirection-event.dto';
-
-type urlStatisticState = Record<string, UrlStatstic>;
-
-export class UrlStatisticHelper {
-  constructor(public readonly urlStatisticState: urlStatisticState) {}
-
-  getUrlState(url: string): UrlStatstic {
-    if (!this.urlHasState(url)) {
-      this.initUrlState(url);
-    }
-
-    return this.urlStatisticState[url];
-  }
-
-  setUrlState(url: string, state: UrlStatstic): void {
-    this.urlStatisticState[url] = state;
-  }
-
-  private urlHasState(url: string): boolean {
-    return !!this.urlStatisticState[url];
-  }
-
-  private initUrlState(url: string): void {
-    this.urlStatisticState[url] = new UrlStatstic();
-  }
-}
+import { UrlStatisticHelper } from './url-statistic.helper';
 
 @Injectable()
 export class UrlStatisticListener extends StatisticStorageUser {
