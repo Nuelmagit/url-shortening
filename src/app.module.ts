@@ -6,9 +6,15 @@ import { ShortenerRequestHandler } from './services/shortener-request-handler.se
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { listeners } from './services/event-listeners/listeners';
 import { StatisticsStorageService } from './services/statistics/storage/statistics-storage.service';
+import { StatisticsService } from './services/statistics/statistics.service';
 
 @Module({
-  providers: [ShortenerRequestHandler, StatisticsStorageService, ...listeners],
+  providers: [
+    ShortenerRequestHandler,
+    StatisticsStorageService,
+    StatisticsService,
+    ...listeners,
+  ],
   imports: [EncoderModule, EventEmitterModule.forRoot()],
   controllers: [ShortUrlController, StatisticController],
 })

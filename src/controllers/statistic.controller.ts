@@ -1,11 +1,12 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { StatisticsService } from 'src/services/statistics/statistics.service';
 
 @Controller('statistic')
 export class StatisticController {
-  constructor() {}
+  constructor(private readonly statisticsService: StatisticsService) {}
 
   @Get(':shortUrl')
   statsByShortUrl(@Param('shortUrl') shortUrl: string) {
-    return `statistic ${shortUrl}`;
+    return this.statisticsService.getUrlStatistics(shortUrl);
   }
 }
