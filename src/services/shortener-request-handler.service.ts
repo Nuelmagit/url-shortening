@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DecodeDto } from 'src/dtos/decode.dto';
 import { EncodeDto } from 'src/dtos/encode.dto';
 import { DecodeResponse } from 'src/response-types/decode-response.dto';
@@ -30,6 +30,8 @@ export class ShortenerRequestHandler {
     const longUrl = this.urlEncoderService.decodeShortUrl(decodeDto.shortUrl);
 
     this.emitDecodeEvent(longUrl);
+
+    if (!longUrl) throw new NotFoundException(`${decodeDto.shortUrl} does not exist`);
 
     return { longUrl };
   }

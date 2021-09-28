@@ -5,6 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DECODE_EVENT, ENCODE_EVENT } from 'src/events/events';
 import { UrlEncoderService } from './encoders/url-encoder.service';
+import { NotFoundException } from '@nestjs/common';
 
 const FIRST_ENCODED_URL = '84210vf731';
 
@@ -104,5 +105,13 @@ describe('ShortenerRequestHandler', () => {
     });
 
     expect(spy).toBeCalledWith(encodeResponse.shortUrl);
+  });
+
+  it('Should throw NotFoundException if the short url does not exist', () => {
+    expect(() =>
+      shortenerRequestHandler.handleDecode({
+        shortUrl: FIRST_ENCODED_URL,
+      }),
+    ).toThrowError(NotFoundException);
   });
 });
