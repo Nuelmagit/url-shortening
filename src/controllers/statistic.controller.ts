@@ -5,6 +5,11 @@ import { StatisticsService } from 'src/services/statistics/statistics.service';
 export class StatisticController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
+  @Get()
+  getGeneralStas() {
+    return this.statisticsService.getStatistics();
+  }
+
   @Get(':shortUrl')
   statsByShortUrl(@Param('shortUrl') shortUrl: string) {
     return this.statisticsService.getUrlStatistics(shortUrl);
