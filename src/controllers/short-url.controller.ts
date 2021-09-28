@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { DecodeDto } from 'src/dtos/decode.dto';
 import { EncodeDto } from 'src/dtos/encode.dto';
 import { DecodeResponse } from 'src/response-types/decode-response.dto';
@@ -12,11 +12,13 @@ export class ShortUrlController {
   ) {}
 
   @Post('encode')
+  @HttpCode(200)
   encode(@Body() encodeDto: EncodeDto): EncodeResponse {
     return this.shortenerRequestHandler.handleEncode(encodeDto);
   }
 
   @Post('decode')
+  @HttpCode(200)
   decode(@Body() decodeDto: DecodeDto): DecodeResponse {
     return this.shortenerRequestHandler.handleDecode(decodeDto);
   }
