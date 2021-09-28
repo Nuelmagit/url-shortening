@@ -3,5 +3,5 @@ export class UrlStatstic {
 
   decodedTimes = 0;
 
-  encodedAttemps = 0;
+  encodeAttemps = 0;
 }
