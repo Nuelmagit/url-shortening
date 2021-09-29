@@ -9,8 +9,6 @@ const BAD_REQUEST_BODY = {
   error: 'Bad Request',
 };
 
-const FIRST_URL_RESPONSE_BODY = { shortUrl: '84210vf731' };
-
 /**
  * TODO. exhaustive test
  */
@@ -63,6 +61,6 @@ describe('ShortUrlController - encode (e2e)', () => {
       .post('/encode')
       .send({ longUrl: 'https://www.google.com' })
       .expect(200)
-      .expect(FIRST_URL_RESPONSE_BODY);
+      .then(({ body }) => expect(body.shortUrl).toBeTruthy());
   });
 });

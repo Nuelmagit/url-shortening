@@ -17,6 +17,12 @@ const notFoundBody = (url: string) => {
   };
 };
 
+const getShortUrl = (fullUrl: string) => {
+  const urlAsArray = fullUrl.split('/');
+  const shorUrlIndex = urlAsArray.length - 1;
+  return urlAsArray[shorUrlIndex];
+};
+
 /**
  * TODO. exhaustive test
  */
@@ -59,12 +65,13 @@ describe('ShortUrlController - decode (e2e)', () => {
   it('Should return shortUrl in the response body', () => {
     const longUrl = 'https://www.google.com';
 
-    const decodeTest = (shortUrl: string) =>
-      request(app.getHttpServer())
+    const decodeTest = (shortUrl: string) => {
+      return request(app.getHttpServer())
         .post('/decode')
-        .send({ shortUrl })
+        .send({ shortUrl: getShortUrl(shortUrl) })
         .expect(200)
         .expect({ longUrl });
+    };
 
     return request(app.getHttpServer())
       .post('/encode')
